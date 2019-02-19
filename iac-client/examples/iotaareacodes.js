@@ -1,3 +1,9 @@
+// IOTA Area Code
+//
+// IAC is a small modification to the wonderful OLC code produced by the
+// Google Zurich team. Modifications were made to the alphabet, to fit in
+// the IOTA protocol and also shortening and lengethening funcs were rm'd.
+
 // Copyright 2014 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the 'License');
@@ -48,9 +54,6 @@
  *   Decode a full code:
  *   var coord = OpenLocationCode.decode(code);
  *   var msg = 'Center is ' + coord.latitudeCenter + ',' + coord.longitudeCenter;
- *
- *   Attempt to trim the first characters from a code:
- *   var shortCode = OpenLocationCode.shorten('8FVC9G8F+6X', 47.5, 8.5);
  *
  *   Recover the full code from a short code:
  *   var code = OpenLocationCode.recoverNearest('9G8F+6X', 47.4, 8.6);
@@ -366,147 +369,6 @@
       codeArea.longitudeLo + gridArea.longitudeHi,
       codeArea.codeLength + gridArea.codeLength
     )
-  })
-
-  /**
-   * Recover the nearest matching code to a specified location.
-   *
-   * Given a valid short Open Location Code this recovers the nearest matching
-   * full code to the specified location.
-   *
-   * @param {string} shortCode A valid short code.
-   * @param {number} referenceLatitude The latitude to use for the reference
-   *     location.
-   * @param {number} referenceLongitude The longitude to use for the reference
-   *     location.
-   * @return {string} The nearest matching full code to the reference location.
-   * @throws {Exception} if the short code is not valid, or the reference
-   *     position values are not numbers.
-   */
-  var recoverNearest = (OpenLocationCode.recoverNearest = function(
-    shortCode,
-    referenceLatitude,
-    referenceLongitude
-  ) {
-    if (!isShort(shortCode)) {
-      if (isFull(shortCode)) {
-        return shortCode
-      } else {
-        throw 'ValueError: Passed short code is not valid: ' + shortCode
-      }
-    }
-    referenceLatitude = Number(referenceLatitude)
-    referenceLongitude = Number(referenceLongitude)
-    if (isNaN(referenceLatitude) || isNaN(referenceLongitude)) {
-      throw 'ValueError: Reference position are not numbers'
-    }
-    // Ensure that latitude and longitude are valid.
-    referenceLatitude = clipLatitude(referenceLatitude)
-    referenceLongitude = normalizeLongitude(referenceLongitude)
-
-    // Clean up the passed code.
-    shortCode = shortCode.toUpperCase()
-    // Compute the number of digits we need to recover.
-    var paddingLength = SEPARATOR_POSITION_ - shortCode.indexOf(SEPARATOR_)
-    // The resolution (height and width) of the padded area in degrees.
-    var resolution = Math.pow(20, 2 - paddingLength / 2)
-    // Distance from the center to an edge (in degrees).
-    var halfResolution = resolution / 2.0
-
-    // Use the reference location to pad the supplied short code and decode it.
-    var codeArea = decode(
-      encode(referenceLatitude, referenceLongitude).substr(0, paddingLength) +
-        shortCode
-    )
-    // How many degrees latitude is the code from the reference? If it is more
-    // than half the resolution, we need to move it north or south but keep it
-    // within -90 to 90 degrees.
-    if (
-      referenceLatitude + halfResolution < codeArea.latitudeCenter &&
-      codeArea.latitudeCenter - resolution >= -LATITUDE_MAX_
-    ) {
-      // If the proposed code is more than half a cell north of the reference location,
-      // it's too far, and the best match will be one cell south.
-      codeArea.latitudeCenter -= resolution
-    } else if (
-      referenceLatitude - halfResolution > codeArea.latitudeCenter &&
-      codeArea.latitudeCenter + resolution <= LATITUDE_MAX_
-    ) {
-      // If the proposed code is more than half a cell south of the reference location,
-      // it's too far, and the best match will be one cell north.
-      codeArea.latitudeCenter += resolution
-    }
-
-    // How many degrees longitude is the code from the reference?
-    if (referenceLongitude + halfResolution < codeArea.longitudeCenter) {
-      codeArea.longitudeCenter -= resolution
-    } else if (referenceLongitude - halfResolution > codeArea.longitudeCenter) {
-      codeArea.longitudeCenter += resolution
-    }
-
-    return encode(
-      codeArea.latitudeCenter,
-      codeArea.longitudeCenter,
-      codeArea.codeLength
-    )
-  })
-
-  /**
-   * Remove characters from the start of an OLC code.
-   *
-   * This uses a reference location to determine how many initial characters
-   * can be removed from the OLC code. The number of characters that can be
-   * removed depends on the distance between the code center and the reference
-   * location.
-   *
-   * @param {string} code The full code to shorten.
-   * @param {number} latitude The latitude to use for the reference location.
-   * @param {number} longitude The longitude to use for the reference location.
-   * @return {string} The code, shortened as much as possible that it is still
-   *     the closest matching code to the reference location.
-   * @throws {Exception} if the passed code is not a valid full code or the
-   *     reference location values are not numbers.
-   */
-  var shorten = (OpenLocationCode.shorten = function(
-    code,
-    latitude,
-    longitude
-  ) {
-    if (!isFull(code)) {
-      throw 'ValueError: Passed code is not valid and full: ' + code
-    }
-    if (code.indexOf(PADDING_CHARACTER_) != -1) {
-      throw 'ValueError: Cannot shorten padded codes: ' + code
-    }
-    var code = code.toUpperCase()
-    var codeArea = decode(code)
-    if (codeArea.codeLength < MIN_TRIMMABLE_CODE_LEN_) {
-      throw 'ValueError: Code length must be at least ' +
-        MIN_TRIMMABLE_CODE_LEN_
-    }
-    // Ensure that latitude and longitude are valid.
-    latitude = Number(latitude)
-    longitude = Number(longitude)
-    if (isNaN(latitude) || isNaN(longitude)) {
-      throw 'ValueError: Reference position are not numbers'
-    }
-    latitude = clipLatitude(latitude)
-    longitude = normalizeLongitude(longitude)
-    // How close are the latitude and longitude to the code center.
-    var range = Math.max(
-      Math.abs(codeArea.latitudeCenter - latitude),
-      Math.abs(codeArea.longitudeCenter - longitude)
-    )
-    for (var i = PAIR_RESOLUTIONS_.length - 2; i >= 1; i--) {
-      // Check if we're close enough to shorten. The range must be less than 1/2
-      // the resolution to shorten at all, and we want to allow some safety, so
-      // use 0.3 instead of 0.5 as a multiplier.
-      if (range < PAIR_RESOLUTIONS_[i] * 0.3) {
-        // Trim it.
-        return code.substring((i + 1) * 2)
-      }
-    }
-    return code
   })
 
   /**
