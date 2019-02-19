@@ -5,7 +5,7 @@ let sock = zmq.socket('sub')
 
 // Connect to the devnet node's ZMQ port
 console.log('Connecting to ZMQ')
-sock.connect('tcp://zmq.devnet.iota.org:5556')
+sock.connect(process.env.ZMQ_URL)
 
 sock.subscribe('tx_trytes')
 

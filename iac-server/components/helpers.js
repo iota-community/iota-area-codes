@@ -24,3 +24,19 @@ module.exports = {
   iotaGen,
   iacRandom
 }
+
+/// TESTING FUNCTIONS
+// const testingFunctions = async () => {
+//   //   console.log(await initKeyspace())
+//   //   console.log(await initTable())
+//   //   console.log(await dropSpace())
+//   //   console.log(iacRandom(), iotaGen(81))
+//   //   const fill = Array(500)
+//   //     .fill()
+//   //     .map(() => ({ tx_id: iotaGen(81), iac: iacRandom() }))
+//   //   console.log(fill)
+//   //   console.log(await storeTransaction(fill))
+//   //   console.log(await queryTransactions('KLJNAA9'))
+//   //   console.log(await fetchTransactions())
+// }
+// main()

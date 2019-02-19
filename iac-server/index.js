@@ -1,8 +1,13 @@
 require('dotenv').config()
-const { iacRandom, iotaGen } = require('./helpers')
-const { initCassandra, fetchTransactions, queryTransactions } = require('./db')
-const zmq = require('./zmq')
 const { json, send } = require('micro')
+
+/// Pull in helpers
+const {
+  initCassandra,
+  fetchTransactions,
+  queryTransactions
+} = require('./components/db')
+const zmq = require('./components/zmq')
 
 module.exports = async (req, res) => {
   let response
@@ -28,18 +33,3 @@ module.exports = async (req, res) => {
   const string = JSON.stringify(response)
   return send(res, 200, string)
 }
-/// TESTING FUNCTIONS
-// const testingFunctions = async () => {
-//   //   console.log(await initKeyspace())
-//   //   console.log(await initTable())
-//   //   console.log(await dropSpace())
-//   //   console.log(iacRandom(), iotaGen(81))
-//   //   const fill = Array(500)
-//   //     .fill()
-//   //     .map(() => ({ tx_id: iotaGen(81), iac: iacRandom() }))
-//   //   console.log(fill)
-//   //   console.log(await storeTransaction(fill))
-//   //   console.log(await queryTransactions('KLJNAA9'))
-//   //   console.log(await fetchTransactions())
-// }
-// main()
