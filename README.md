@@ -26,6 +26,11 @@ Each code uses these two parts to locate a larger region and then find the preci
 
 For those needing more precision, an additional, optional character can be used to improve accuracy to roughly 3 x 3 meters – about the size of a small car.
 
+| Code length   | 2       | 4      | 6          | 8            | +    | 10                | 11    |
+| ------------- | ------- | ------ | ---------- | ------------ | ---- | ----------------- | ----- |
+| Block size    | 20°     | 1°     | 0.05° (3′) | 0.0025° (9″) |      | 0.000125° (0.45″) |       |
+| Approximately | 2200 km | 110 km | 5.5 km     | 275 m        |      | 14 m              | 3.5 m |
+
 ### Why would we want this:
 
 When publishing information on IOTA there is no way to easily identify transactions that relate to a geographic areas. These transactions could contain localised service advertisements, sensor information or any number of other data formats. 
@@ -54,15 +59,13 @@ The library will have a limited subset of the OLC libraries with a few extra ite
 
 See the `iac-client` folder for more progress.
 
-#### Server Application - Pre-Alpha
+#### [Server Application](vac-server/README) - Pre-Alpha
 
 The server will be used to store and serve the tagged transactions to clients. It comprises of the following components:
 
 - User facing HTTP API
 - ZMQ stream reader
 - Cassandra DB for storage and query
-
-
 
 
 
