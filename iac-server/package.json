@@ -1,0 +1,12 @@
+{
+  "main": "index.js",
+  "scripts": {
+    "start": "micro"
+  },
+  "dependencies": {
+    "cassandra-driver": "^4.0.0",
+    "dotenv": "^6.2.0",
+    "micro": "^9.3.3",
+    "zeromq": "^5.1.0"
+  }
+}
