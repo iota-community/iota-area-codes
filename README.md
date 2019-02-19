@@ -4,6 +4,8 @@ IACs are short, tryte encoded, location codes that can be used to tag and retrie
 
 > For example: In IAC, you can represent the location of the IOTA Foundation's registered address as `NPHTQORL9XK` 
 
+Use this link to look it up: [here](https://olc.dag.sh/)
+
 IACs are a direct copy of the [Open Location Codes](https://en.wikipedia.org/wiki/Open_Location_Code), also known as [Plus Codes](https://plus.codes/), proposed by Google Zurich in 2014. However a few changes have been made to make it compatible with IOTA's encoding. Compare the differences below which are as follows:
 
 |               | OLC                    | IAC                    |
@@ -14,6 +16,8 @@ IACs are a direct copy of the [Open Location Codes](https://en.wikipedia.org/wik
 | **Padding**   | `0`                    | `A`                    |
 
 ### How it works:
+
+[Interactive example on how IACs are made](https://olc.dag.sh/how-it-works)
 
 Plus codes are based on latitude and longitude – the grid that can be used to describe every point on the planet. By using a simpler code system, they end up much shorter and easier to use than traditional global coordinates.
 
