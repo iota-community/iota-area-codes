@@ -1,4 +1,4 @@
-## IOTA Area Codes (IAC)
+## IOTA Area Codes (IAC) - WORK IN PROGRESS
 
 IACs are short, tryte encoded, location codes that can be used to tag and retrieve IOTA transactions related to specific locations. The IACs are typically 10 trytes long and will represent a 13.5m by 13.5m area, at the equator. However IACs can be 11 trytes long and represent a 2.8m by 3.5m grid.
 
