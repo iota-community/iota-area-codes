@@ -58,7 +58,7 @@ The library will have a limited subset of the OLC libraries with a few extra ite
 
 See the `iac-client` folder for more progress.
 
-#### [Server Application](vac-server/README) - Pre-Alpha
+#### [Server Application](iac-server/README) - Pre-Alpha
 
 The server will be used to store and serve the tagged transactions to clients. It comprises of the following components:
 
